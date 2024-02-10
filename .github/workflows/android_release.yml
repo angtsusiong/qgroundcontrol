@@ -56,7 +56,7 @@ jobs:
         uses: nttld/setup-ndk@v1
         id: setup-ndk
         with:
-          ndk-version: r25c
+          ndk-version: r21e
           add-to-path: false
 
       - name: Remove Android SDKs to force usage of android-33 only
