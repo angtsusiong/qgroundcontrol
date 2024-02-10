@@ -2,20 +2,11 @@
 name: Android 32/64-bit Release
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - 'master'
       - 'Stable*'
-    tags:
-      - 'v*'
-    paths-ignore:
-      - 'docs/**'
-  pull_request:
-    branches:
-    - '*'
-    paths-ignore:
-      - 'docs/**'
-      - '.github/workflows/**'
 
 defaults:
   run:
@@ -24,7 +15,7 @@ defaults:
 env:
   SOURCE_DIR:   ${{ github.workspace }}
   QT_VERSION:   6.6.1
-  BUILD_TYPE:   ${{ fromJSON('["DailyBuild", "StableBuild"]')[ github.ref_type == 'tag' || contains(github.ref, 'Stable_' ) ] }}
+  BUILD_TYPE:   DailyBuild
 
 jobs:
   build:
@@ -83,29 +74,7 @@ jobs:
             ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --uninstall "platforms;android-33-ext4"
             ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --uninstall "platforms;android-34"
             ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --uninstall "platforms;android-34-ext8"
-
-      - name: Install ccache
-        run:  sudo apt-get install ccache
-
-      - name: Prepare ccache timestamp
-        id: ccache_cache_timestamp
-        run: echo "name=timestamp::$(date --utc +'%Y-%m-%d-%H\;%M\;%S')" >> $GITHUB_OUTPUT
-
-      - name: ccache cache files
-        uses: actions/cache@v3
-        with:
-          path:         ~/.ccache
-          key:          ${{ runner.os }}-ccache-${{steps.ccache_cache_timestamp.outputs.timestamp}}
-          restore-keys: ${{ runner.os }}-ccache-
-
-      - name: Setup ccache
-        run: |
-            mkdir -p ~/.ccache
-            echo "base_dir = ${GITHUB_WORKSPACE}" > ~/.ccache/ccache.conf
-            echo "compression = true" >> ~/.ccache/ccache.conf
-            echo "compression_level = 5" >> ~/.ccache/ccache.conf
-            ccache -s
-            ccache -z
+            ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --uninstall "platforms;android-34-ext10"
 
       - name: Create build directory
         run:  mkdir ${{ runner.temp }}/shadow_build_dir
@@ -131,27 +100,8 @@ jobs:
             qmake -r ${SOURCE_DIR}/qgroundcontrol.pro -spec android-clang CONFIG+=${BUILD_TYPE} CONFIG+=installer ANDROID_ABIS="${{ matrix.eabi }}"
             make -j2
 
-      - name: ccache post-run
-        run:  ccache -s
-
       - name: Save artifact
         uses: actions/upload-artifact@master
         with:
           name: ${{ matrix.ARTIFACT }}
           path: ${{ runner.temp }}/shadow_build_dir/package/${{ matrix.ARTIFACT }}
-
-      - name: Upload build to S3 Bucket
-        if:                 github.event_name == 'push'
-        working-directory:  ${{ runner.temp }}/shadow_build_dir/package
-        run: |
-              aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
-              aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-              aws s3 cp ${{ matrix.ARTIFACT }} s3://qgroundcontrol/builds/${{ github.ref_name }}/${{ matrix.ARTIFACT }} --region us-west-2 --acl public-read
-
-      - name: Upload tagged stable build to S3 latest Bucket
-        if:                 github.event_name == 'push' && github.ref_type == 'tag'
-        working-directory:  ${{ runner.temp }}/shadow_build_dir/package
-        run: |
-              aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
-              aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-              aws s3 cp ${{ matrix.ARTIFACT }} s3://qgroundcontrol/latest/${{ matrix.ARTIFACT }} --region us-west-2 --acl public-read
