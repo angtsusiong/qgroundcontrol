@@ -4503,6 +4503,7 @@
         <value code="2">Require a landing</value>
         <value code="3">Require a takeoff and a landing</value>
         <value code="4">Require both a takeoff and a landing, or neither</value>
+        <value code="5">Same as previous, but require a landing if in air and no valid VTOL landing approach is present</value>
       </values>
     </parameter>
     <parameter name="MIS_YAW_ERR" default="12.0" type="FLOAT">
@@ -7416,15 +7417,6 @@
       <decimal>1</decimal>
       <increment>0.5</increment>
     </parameter>
-    <parameter name="RTL_HDG_MD" default="0" type="INT32">
-      <short_desc>RTL heading mode</short_desc>
-      <long_desc>Defines the heading behavior during RTL</long_desc>
-      <values>
-        <value code="0">Towards next waypoint.</value>
-        <value code="1">Heading matches destination.</value>
-        <value code="2">Use current heading.</value>
-      </values>
-    </parameter>
     <parameter name="RTL_LAND_DELAY" default="0.0" type="FLOAT">
       <short_desc>Return mode delay</short_desc>
       <long_desc>Delay before landing (after initial descent) in Return mode. If set to -1 the system will not land but loiter at RTL_DESCEND_ALT.</long_desc>
@@ -9328,18 +9320,6 @@
       <short_desc>simulated GPS number of satellites used</short_desc>
       <min>0</min>
       <max>50</max>
-    </parameter>
-    <parameter name="SIM_GZ_HOME_ALT" default="488.0" type="FLOAT">
-      <short_desc>simulator origin altitude</short_desc>
-      <unit>m</unit>
-    </parameter>
-    <parameter name="SIM_GZ_HOME_LAT" default="47.397742" type="FLOAT">
-      <short_desc>simulator origin latitude</short_desc>
-      <unit>deg</unit>
-    </parameter>
-    <parameter name="SIM_GZ_HOME_LON" default="8.545594" type="FLOAT">
-      <short_desc>simulator origin longitude</short_desc>
-      <unit>deg</unit>
     </parameter>
     <parameter name="SIM_MAG_OFFSET_X" default="0.0" type="FLOAT">
       <short_desc>simulated magnetometer X offset</short_desc>
