@@ -1,4 +1,4 @@
-name: Videoapp Linux Debug and Test
+name: Video App Linux
 
 on:
   workflow_dispatch:
@@ -13,7 +13,7 @@ defaults:
 
 env:
   SOURCE_DIR:   ${{ github.workspace }}
-  QT_VERSION:   6.6.1
+  QT_VERSION:   6.6.*
   BUILD_TYPE:   ${{ fromJSON('["DailyBuild", "StableBuild"]')[ github.ref_type == 'tag' || contains(github.ref, 'Stable_' ) ] }}
 
 jobs:
@@ -34,29 +34,25 @@ jobs:
           host:         linux
           target:       desktop
           dir:          ${{ runner.temp }}
-          modules:      qtcharts qtlocation qtpositioning qtspeech qt5compat qtmultimedia qtserialport qtimageformats qtshadertools
+          modules:      qtmultimedia
           setup-python: true
 
       - name: Install github environment dependencies for unit test running
-        run:  sudo apt-get install libxcb-xinerama0
+        run:  sudo apt-get install libxcb-xinerama0 libxkbcommon-x11-0 libxcb-cursor0
 
       - name: Install QGC source dependencies
         run:  sudo apt-get install -y libsdl2-dev
-
-      - name: Install source dependencies required to run unit tests in workflow container
-        run:  sudo apt-get install -y libxkbcommon-x11-0 libxcb-cursor0
 
       - name: Install Gstreamer dev packages
         run:  sudo apt-get install -y libgstreamer-plugins-base1.0-dev libgstreamer1.0-0:amd64 libgstreamer1.0-dev
 
       - name: Install post-link dependencies
-        run:  sudo apt-get install -y binutils patchelf
-
+        run:  sudo apt-get install -y binutils patchelf ninja-build
       - name: Create build directory
         run:  mkdir ${{ runner.temp }}/shadow_build_dir
 
       - name: Build
         working-directory: ${{ runner.temp }}/shadow_build_dir
         run:  |
-          qmake -r ${SOURCE_DIR}/videoreceiverapp.pro CONFIG+=debug CONFIG+=${BUILD_TYPE}
-          make -j2
+          cmake -S ${SOURCE_DIR}/VideoReceiverApp -B ${SOURCE_DIR}/VideoReceiverApp/shadow_build_dir/ -G Ninja
+          cmake --build ${SOURCE_DIR}/VideoReceiverApp/shadow_build_dir/ --target all

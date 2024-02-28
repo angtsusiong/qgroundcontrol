@@ -13,6 +13,9 @@
 #include <QSettings>
 #include <QLineF>
 #include <QPointF>
+#ifdef QT_DEBUG
+#include "MockLink.h"
+#endif
 
 static const char* kQmlGlobalKeyName = "QGCQml";
 
@@ -79,6 +82,9 @@ void QGroundControlQmlGlobal::setToolbox(QGCToolbox* toolbox)
     _gpsRtkFactGroup        = qgcApp()->gpsRtkFactGroup();
     _adsbVehicleManager     = toolbox->adsbVehicleManager();
     _globalPalette          = new QGCPalette(this);
+#ifndef QGC_AIRLINK_DISABLED
+    _airlinkManager         = toolbox->airlinkManager();
+#endif
 #ifdef CONFIG_UTM_ADAPTER
     _utmspManager            = toolbox->utmspManager();
 #endif
