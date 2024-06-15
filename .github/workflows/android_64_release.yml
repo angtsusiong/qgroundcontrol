@@ -34,7 +34,7 @@ jobs:
           git fetch --all --tags -f --depth 1
 
       - name: Install Qt
-        uses: jurplel/install-qt-action@v3
+        uses: jurplel/install-qt-action@v4
         with:
           version:      ${{ env.QT_VERSION }}
           host:         linux
@@ -42,7 +42,6 @@ jobs:
           dir:          ${{ runner.temp }}
           modules:      qtcharts
           setup-python: true
-          extra:        --base https://mirrors.ocf.berkeley.edu/qt
 
       - name: Install Android NDK
         uses: nttld/setup-ndk@v1
