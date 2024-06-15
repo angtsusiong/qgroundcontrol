@@ -91,6 +91,14 @@ jobs:
             sudo rm -rf ${ANDROID_SDK_ROOT}/ndk
             sudo du -hs ${ANDROID_SDK_ROOT}
             sudo df -h /
+            sudo du -hs /usr/share/swift
+            sudo du -hs /usr/share/php*
+            sudo du -hs /usr/share/mysql
+            sudo du -hs /usr/share/mysql-common
+            sudo du -hs /usr/share/postgresql
+            sudo du -hs /usr/share/postgresql-common
+            sudo du -hs /usr/share/java
+            sudo du -hs /usr/share/javascript
             sudo ls -lah /usr/share
             sudo du -hs /usr/share/dotnet
             sudo rm -rf /usr/share/dotnet
