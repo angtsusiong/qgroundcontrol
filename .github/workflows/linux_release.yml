@@ -54,6 +54,15 @@ jobs:
       - name: Create build directory
         run:  mkdir ${{ runner.temp }}/shadow_build_dir
 
+      - name: Free up space
+        run : |
+            sudo df -h /
+            sudo rm -rf ${ANDROID_SDK_ROOT}/ndk
+            sudo rm -rf /usr/share/dotnet
+            sudo rm -rf /usr/share/miniconda
+            sudo rm -rf /usr/share/swift
+            sudo df -h /
+
       - name: Build
         working-directory: ${{ runner.temp }}/shadow_build_dir
         run:  |

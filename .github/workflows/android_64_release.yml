@@ -34,7 +34,7 @@ jobs:
           git fetch --all --tags -f --depth 1
 
       - name: Install Qt
-        uses: jurplel/install-qt-action@v4
+        uses: jurplel/install-qt-action@v3
         with:
           version:      ${{ env.QT_VERSION }}
           host:         linux
@@ -81,20 +81,13 @@ jobs:
         run: |
             ${SOURCE_DIR}/tools/update_android_manifest_package.sh ${{ github.ref_name }}
 
-      - name: Space status
+      - name: Free up space
         run : |
             sudo df -h /
-            sudo du -hs ${ANDROID_SDK_ROOT}/ndk
             sudo rm -rf ${ANDROID_SDK_ROOT}/ndk
-            sudo df -h /
-            sudo du -hs /usr/share/swift
-            sudo rm -rf /usr/share/swift
-            sudo df -h /
-            sudo du -hs /usr/share/dotnet
             sudo rm -rf /usr/share/dotnet
-            sudo df -h /
-            sudo du -hs /usr/share/miniconda
             sudo rm -rf /usr/share/miniconda
+            sudo rm -rf /usr/share/swift
             sudo df -h /
 
       - name: Build
