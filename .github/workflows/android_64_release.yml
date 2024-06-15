@@ -69,7 +69,10 @@ jobs:
             wget --quiet https://gstreamer.freedesktop.org/data/pkg/android/1.18.6/gstreamer-1.0-android-universal-1.18.6.tar.xz
             mkdir gstreamer-1.0-android-universal-1.18.6
             tar xf gstreamer-1.0-android-universal-1.18.6.tar.xz -C gstreamer-1.0-android-universal-1.18.6
-            du -ha gstreamer-1.0-android-universal-1.18.6 | sort -h
+            rm -rf  gstreamer-1.0-android-universal-1.18.6/armv7
+            rm -rf  gstreamer-1.0-android-universal-1.18.6/x86
+            rm -rf  gstreamer-1.0-android-universal-1.18.6/x86_64
+            rm -f gstreamer-1.0-android-universal-1.18.6.tar.xz
 
       - name: Update android manifest
         if: github.ref_name != 'Stable'
@@ -78,10 +81,14 @@ jobs:
 
       - name: Space status
         run : |
+             sudo df -h /
              sudo du -hs ${ANDROID_SDK_ROOT}
              sudo rm -rf ${ANDROID_SDK_ROOT}/ndk
              sudo du -hs ${ANDROID_SDK_ROOT}
              sudo du -hs ${Qt5_DIR}
+             sudo du -hs /usr/share/dotnet
+             sudo du -hs /usr/share/miniconda
+             sudo df -h /
 
       - name: Build
         working-directory: ${{ runner.temp }}/shadow_build_dir
