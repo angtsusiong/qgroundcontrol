@@ -52,6 +52,11 @@ jobs:
 
       - name: Remove Android SDKs to force usage of android-33 only
         run: |
+            ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --uninstall "build-tools;31.0.0"
+            ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --uninstall "build-tools;32.0.0"
+            ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --uninstall "build-tools;34.0.0"
+            ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --uninstall "platforms;android-31"
+            ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --uninstall "platforms;android-32"
             ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --uninstall "platforms;android-33-ext5"
             ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --uninstall "platforms;android-33-ext4"
             ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --uninstall "platforms;android-34"
@@ -81,14 +86,21 @@ jobs:
 
       - name: Space status
         run : |
-             sudo df -h /
-             sudo du -hs ${ANDROID_SDK_ROOT}
-             sudo rm -rf ${ANDROID_SDK_ROOT}/ndk
-             sudo du -hs ${ANDROID_SDK_ROOT}
-             sudo du -hs ${Qt5_DIR}
-             sudo du -hs /usr/share/dotnet
-             sudo du -hs /usr/share/miniconda
-             sudo df -h /
+            sudo df -h /
+            sudo du -hs ${ANDROID_SDK_ROOT}
+            sudo rm -rf ${ANDROID_SDK_ROOT}/ndk
+            sudo du -hs ${ANDROID_SDK_ROOT}
+            sudo df -h /
+            sudo ls -lah /usr/share
+            sudo du -hs /usr/share/dotnet
+            sudo rm -rf /usr/share/dotnet
+            sudo df -h /
+            sudo du -hs /usr/share/miniconda
+            sudo rm -rf /usr/share/miniconda
+            sudo df -h /
+            sudo apt-get autoremove -y 
+            sudo apt-get clean
+            sudo df -h /
 
       - name: Build
         working-directory: ${{ runner.temp }}/shadow_build_dir
