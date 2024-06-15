@@ -42,6 +42,7 @@ jobs:
           dir:          ${{ runner.temp }}
           modules:      qtcharts
           setup-python: true
+          extra:        --base https://mirrors.ocf.berkeley.edu/qt
 
       - name: Install Android NDK
         uses: nttld/setup-ndk@v1
