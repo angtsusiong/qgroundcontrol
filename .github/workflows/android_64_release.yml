@@ -73,10 +73,7 @@ jobs:
         run: |
             wget --quiet https://gstreamer.freedesktop.org/data/pkg/android/1.18.6/gstreamer-1.0-android-universal-1.18.6.tar.xz
             mkdir gstreamer-1.0-android-universal-1.18.6
-            tar xf gstreamer-1.0-android-universal-1.18.6.tar.xz -C gstreamer-1.0-android-universal-1.18.6
-            rm -rf  gstreamer-1.0-android-universal-1.18.6/armv7
-            rm -rf  gstreamer-1.0-android-universal-1.18.6/x86
-            rm -rf  gstreamer-1.0-android-universal-1.18.6/x86_64
+            tar xf gstreamer-1.0-android-universal-1.18.6.tar.xz -C gstreamer-1.0-android-universal-1.18.6 arm64
             rm -f gstreamer-1.0-android-universal-1.18.6.tar.xz
 
       - name: Update android manifest
@@ -87,27 +84,17 @@ jobs:
       - name: Space status
         run : |
             sudo df -h /
-            sudo du -hs ${ANDROID_SDK_ROOT}
+            sudo du -hs ${ANDROID_SDK_ROOT}/ndk
             sudo rm -rf ${ANDROID_SDK_ROOT}/ndk
-            sudo du -hs ${ANDROID_SDK_ROOT}
             sudo df -h /
             sudo du -hs /usr/share/swift
-            sudo du -hs /usr/share/php*
-            sudo du -hs /usr/share/mysql
-            sudo du -hs /usr/share/mysql-common
-            sudo du -hs /usr/share/postgresql
-            sudo du -hs /usr/share/postgresql-common
-            sudo du -hs /usr/share/java
-            sudo du -hs /usr/share/javascript
-            sudo ls -lah /usr/share
+            sudo rm -rf /usr/share/swift
+            sudo df -h /
             sudo du -hs /usr/share/dotnet
             sudo rm -rf /usr/share/dotnet
             sudo df -h /
             sudo du -hs /usr/share/miniconda
             sudo rm -rf /usr/share/miniconda
-            sudo df -h /
-            sudo apt-get autoremove -y 
-            sudo apt-get clean
             sudo df -h /
 
       - name: Build
